@@ -89,7 +89,7 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+                    className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto py-8"
                     onClick={onClose}
                 >
                     <motion.div
@@ -97,10 +97,19 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.9, opacity: 0 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="glass rounded-2xl p-6 max-w-4xl w-full border border-slate-200 dark:border-slate-700 my-8"
+                        className="glass rounded-2xl p-6 max-w-4xl w-full border border-slate-200 dark:border-slate-700 mx-auto my-4 max-h-[90vh] overflow-y-auto relative"
                     >
+                        {/* Close Button - Fixed in top-right corner */}
+                        <button
+                            onClick={onClose}
+                            className="absolute top-4 right-4 z-10 p-2 rounded-xl glass hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-lg"
+                            aria-label="Close modal"
+                        >
+                            <X className="w-6 h-6 text-slate-900 dark:text-white" />
+                        </button>
+
                         {/* Header */}
-                        <div className="flex items-start justify-between mb-6">
+                        <div className="mb-6 pr-12">
                             <div className="flex-1">
                                 <div className="flex items-center space-x-3 mb-2">
                                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
@@ -118,12 +127,6 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                                 </div>
                                 <p className="text-slate-500 dark:text-slate-400">{stock.name}</p>
                             </div>
-                            <button
-                                onClick={onClose}
-                                className="p-2 rounded-xl glass hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
                         </div>
 
                         {/* Price Info */}
