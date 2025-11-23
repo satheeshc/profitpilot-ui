@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-// Backend API URL
-const API_BASE_URL = 'http://localhost:5001/api/stocks';
-const SOCKET_URL = 'http://localhost:5001';
+// Backend API URL - Use environment variable or default to production
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://profitpilot-server.onrender.com/api/stocks';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://profitpilot-server.onrender.com';
 
 // Fallback to mock data if API fails
 import { mockStocks } from '../data/mockData';
