@@ -173,9 +173,16 @@ export const mockStocks = [
 // Calculate portfolio recommendations based on budget
 export const calculatePortfolio = (budget, stocks) => {
     // Filter strong buy stocks and sort by win rate
+    // Filter strong buy and buy stocks, prioritizing strong-buy
     const strongBuyStocks = stocks
-        .filter(stock => stock.signal === 'strong-buy')
-        .sort((a, b) => b.winRate - a.winRate);
+        .filter(stock => stock.signal === 'strong-buy' || stock.signal === 'buy')
+        .sort((a, b) => {
+            // Prioritize strong-buy
+            if (a.signal === 'strong-buy' && b.signal !== 'strong-buy') return -1;
+            if (b.signal === 'strong-buy' && a.signal !== 'strong-buy') return 1;
+            // Then sort by win rate
+            return b.winRate - a.winRate;
+        });
 
     const portfolio = [];
     let remainingBudget = budget;

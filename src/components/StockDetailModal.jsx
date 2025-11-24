@@ -31,15 +31,27 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
             };
 
             const days = daysMap[timeRange] || 7;
-            const candles = await fetchStockCandles(stock.symbol, 'D', days);
 
-            if (candles && candles.c && candles.c.length > 0) {
+            // Determine appropriate resolution based on time range
+            let resolution = 'D';
+            if (timeRange === '1D') resolution = '15'; // 15 min for 1 day
+            else if (timeRange === '7D') resolution = '60'; // 60 min for 7 days
+            else if (timeRange === '1M') resolution = 'D'; // Daily for 1 month
+
+            const to = Math.floor(Date.now() / 1000);
+            const from = to - (days * 24 * 60 * 60);
+
+            const candles = await fetchStockCandles(stock.symbol, resolution, from, to);
+
+            if (candles && candles.s === 'ok' && candles.c && candles.c.length > 0) {
                 // Format data for area chart
                 const areaData = candles.c.map((close, index) => ({
                     value: close,
                     date: new Date(candles.t[index] * 1000).toLocaleDateString('en-US', {
                         month: 'short',
-                        day: 'numeric'
+                        day: 'numeric',
+                        hour: timeRange === '1D' || timeRange === '7D' ? '2-digit' : undefined,
+                        minute: timeRange === '1D' || timeRange === '7D' ? '2-digit' : undefined
                     })
                 }));
                 setChartData(areaData);
@@ -48,7 +60,9 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                 const candleChartData = candles.c.map((close, index) => ({
                     date: new Date(candles.t[index] * 1000).toLocaleDateString('en-US', {
                         month: 'short',
-                        day: 'numeric'
+                        day: 'numeric',
+                        hour: timeRange === '1D' || timeRange === '7D' ? '2-digit' : undefined,
+                        minute: timeRange === '1D' || timeRange === '7D' ? '2-digit' : undefined
                     }),
                     open: candles.o[index],
                     high: candles.h[index],
@@ -58,21 +72,14 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                 }));
                 setCandleData(candleChartData);
             } else {
-                // Fallback to trend data
-                const fallbackData = stock.trend.map((value, index) => ({
-                    value,
-                    date: `Day ${index + 1}`
-                }));
-                setChartData(fallbackData);
+                console.warn('No candle data returned or status not ok:', candles);
+                setChartData([]);
+                setCandleData([]);
             }
         } catch (error) {
             console.error('Error loading chart data:', error);
-            // Use fallback data
-            const fallbackData = stock.trend.map((value, index) => ({
-                value,
-                date: `Day ${index + 1}`
-            }));
-            setChartData(fallbackData);
+            setChartData([]);
+            setCandleData([]);
         } finally {
             setLoading(false);
         }

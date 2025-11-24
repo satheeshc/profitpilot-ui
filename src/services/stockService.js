@@ -6,7 +6,8 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://profitpilot-server
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://profitpilot-server.onrender.com';
 
 // Fallback to mock data if API fails
-import { mockStocks } from '../data/mockData';
+// Fallback to mock data if API fails
+// import { mockStocks } from '../data/mockData';
 
 // Stock symbols we're tracking
 export const TRACKED_SYMBOLS = [
@@ -34,14 +35,28 @@ export const fetchStockQuote = async (symbol) => {
 
 /**
  * Fetch historical candle data for charts
+ * @param {string} symbol - Stock symbol
+ * @param {string} resolution - Chart resolution (15, 60, D, W, M)
+ * @param {number} fromOrDaysBack - Either a timestamp (from) or number of days back
+ * @param {number} to - Optional timestamp (to), if fromOrDaysBack is a timestamp
  */
-export const fetchStockCandles = async (symbol, resolution = 'D', daysBack = 30) => {
+export const fetchStockCandles = async (symbol, resolution = 'D', fromOrDaysBack = 30, to = null) => {
     try {
-        const to = Math.floor(Date.now() / 1000);
-        const from = to - (daysBack * 24 * 60 * 60);
+        let from, toTimestamp;
+
+        // Check if fromOrDaysBack is a timestamp (from) or daysBack
+        if (to !== null) {
+            // Called with (symbol, resolution, from, to)
+            from = fromOrDaysBack;
+            toTimestamp = to;
+        } else {
+            // Called with (symbol, resolution, daysBack)
+            toTimestamp = Math.floor(Date.now() / 1000);
+            from = toTimestamp - (fromOrDaysBack * 24 * 60 * 60);
+        }
 
         const response = await axios.get(`${API_BASE_URL}/candle`, {
-            params: { symbol, resolution, from, to }
+            params: { symbol, resolution, from, to: toTimestamp }
         });
         return response.data;
     } catch (error) {
@@ -110,25 +125,24 @@ export const fetchAllStocks = async () => {
                 });
 
                 const data = response.data;
-                const mockStock = mockStocks.find(s => s.symbol === symbol) || {};
+                // const mockStock = mockStocks.find(s => s.symbol === symbol) || {};
 
                 // Fetch candles for trend if needed
-                let trend = mockStock.trend || [];
+                let trend = [];
                 // We could fetch candles here if needed, but for speed we might skip or optimize
                 // For now, let's keep using mock trend if real candles aren't fetched in analyze endpoint
                 // (The analyze endpoint currently doesn't return trend/candles to save bandwidth)
 
                 stocks.push({
-                    ...mockStock,
                     ...data,
                     trend: trend // Keep mock trend or fetch real candles if critical
                 });
 
             } catch (e) {
                 console.error(`Failed to fetch analyzed stock ${symbol}`, e);
-                // Fallback to mock
-                const mock = mockStocks.find(s => s.symbol === symbol);
-                if (mock) stocks.push(mock);
+                // Fallback to mock - REMOVED
+                // const mock = mockStocks.find(s => s.symbol === symbol);
+                // if (mock) stocks.push(mock);
             }
 
             // Small delay
@@ -138,7 +152,7 @@ export const fetchAllStocks = async () => {
         return stocks;
     } catch (error) {
         console.error('Error fetching all stocks:', error.message);
-        return mockStocks;
+        return [];
     }
 };
 

@@ -7,12 +7,12 @@ import BiWeeklyAdvisor from './components/BiWeeklyAdvisor';
 import MarketPulse from './components/MarketPulse';
 import StockGrid from './components/StockGrid';
 import StockDetailModal from './components/StockDetailModal';
-import { mockStocks } from './data/mockData';
+// import { mockStocks } from './data/mockData';
 import { fetchAllStocks, StockWebSocket } from './services/stockService';
 import { RefreshCw } from 'lucide-react';
 
 function App() {
-    const [stocks, setStocks] = useState(mockStocks);
+    const [stocks, setStocks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [lastUpdate, setLastUpdate] = useState(new Date());
     const [selectedStock, setSelectedStock] = useState(null);

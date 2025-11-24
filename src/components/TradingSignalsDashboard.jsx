@@ -1,5 +1,7 @@
-import React from 'react';
-import { TrendingUp, TrendingDown, Target, Shield, Award, Zap, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import SignalListModal from './SignalListModal';
+import InfoModal from './InfoModal';
+import { TrendingUp, TrendingDown, Target, Shield, Award, Zap, AlertCircle, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { formatCurrency, formatPercent } from '../data/mockData';
 
@@ -9,9 +11,51 @@ const TradingSignalsDashboard = ({ stocks }) => {
     const buyStocks = stocks.filter(s => s.signal === 'buy');
     const sellStocks = stocks.filter(s => s.signal === 'sell');
 
-    const avgWinRate = stocks.reduce((sum, s) => sum + s.winRate, 0) / stocks.length;
-    const topPerformer = [...stocks].sort((a, b) => b.changePercent - a.changePercent)[0];
-    const worstPerformer = [...stocks].sort((a, b) => a.changePercent - b.changePercent)[0];
+    const avgWinRate = stocks.length > 0 ? stocks.reduce((sum, s) => sum + s.winRate, 0) / stocks.length : 0;
+    const topPerformer = stocks.length > 0 ? [...stocks].sort((a, b) => b.changePercent - a.changePercent)[0] : null;
+    const worstPerformer = stocks.length > 0 ? [...stocks].sort((a, b) => a.changePercent - b.changePercent)[0] : null;
+
+    const [modalConfig, setModalConfig] = useState({ isOpen: false, type: null, title: '', data: [] });
+
+    const handleOpenModal = (type, title, data) => {
+        setModalConfig({
+            isOpen: true,
+            type,
+            title,
+            data
+        });
+    };
+
+    const handleCloseModal = () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+    };
+
+    const [infoModalOpen, setInfoModalOpen] = useState(false);
+
+    const winRateExplanation = (
+        <div className="space-y-4">
+            <p>
+                The <strong>Average Win Rate</strong> represents the historical probability of success for the current active signals based on our AI's backtesting data.
+            </p>
+            <div>
+                <h4 className="font-bold text-slate-900 dark:text-white mb-2">How it works:</h4>
+                <ul className="list-disc pl-5 space-y-2 text-sm">
+                    <li>
+                        <strong>Historical Analysis:</strong> For every signal generated, our algorithm looks back at similar market conditions in the past 20 years.
+                    </li>
+                    <li>
+                        <strong>Success Metric:</strong> A signal is considered a 'win' if it reached its profit target before hitting the stop-loss level.
+                    </li>
+                    <li>
+                        <strong>Calculation:</strong> The percentage shows the average success rate of all currently active signals combined.
+                    </li>
+                </ul>
+            </div>
+            <p className="text-sm italic bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
+                A higher win rate indicates higher confidence in the current set of signals based on historical performance.
+            </p>
+        </div>
+    );
 
     const SignalCard = ({ title, stocks, color, icon: Icon, bgColor, borderColor }) => (
         <motion.div
@@ -105,7 +149,8 @@ const TradingSignalsDashboard = ({ stocks }) => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="glass rounded-xl p-4 border-2 border-emerald-500 shadow-lg"
+                    onClick={() => handleOpenModal('buy', 'Buy Signals', [...strongBuyStocks, ...buyStocks])}
+                    className="glass rounded-xl p-4 border-2 border-emerald-500 shadow-lg cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/10 transition-colors"
                 >
                     <div className="flex items-center space-x-2 mb-2">
                         <TrendingUp className="w-5 h-5 text-emerald-500" />
@@ -120,7 +165,8 @@ const TradingSignalsDashboard = ({ stocks }) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="glass rounded-xl p-4 border-2 border-red-500 shadow-lg"
+                    onClick={() => handleOpenModal('sell', 'Sell Signals', [...strongSellStocks, ...sellStocks])}
+                    className="glass rounded-xl p-4 border-2 border-red-500 shadow-lg cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
                 >
                     <div className="flex items-center space-x-2 mb-2">
                         <TrendingDown className="w-5 h-5 text-red-500" />
@@ -137,9 +183,17 @@ const TradingSignalsDashboard = ({ stocks }) => {
                     transition={{ delay: 0.2 }}
                     className="glass rounded-xl p-4 border-2 border-amber-500 shadow-lg"
                 >
-                    <div className="flex items-center space-x-2 mb-2">
-                        <Award className="w-5 h-5 text-amber-500" />
-                        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Avg Win Rate</p>
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                            <Award className="w-5 h-5 text-amber-500" />
+                            <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Avg Win Rate</p>
+                        </div>
+                        <button
+                            onClick={() => setInfoModalOpen(true)}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full transition-colors"
+                        >
+                            <Info className="w-4 h-4 text-slate-400 hover:text-blue-500" />
+                        </button>
                     </div>
                     <p className="text-3xl font-black text-amber-600 dark:text-amber-400">
                         {avgWinRate.toFixed(0)}%
@@ -157,10 +211,10 @@ const TradingSignalsDashboard = ({ stocks }) => {
                         <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Top Mover</p>
                     </div>
                     <p className="text-xl font-black text-blue-600 dark:text-blue-400">
-                        {topPerformer.symbol}
+                        {topPerformer ? topPerformer.symbol : '-'}
                     </p>
                     <p className="text-sm font-bold text-emerald-500">
-                        {formatPercent(topPerformer.changePercent)}
+                        {topPerformer ? formatPercent(topPerformer.changePercent) : '-'}
                     </p>
                 </motion.div>
             </div>
@@ -207,7 +261,22 @@ const TradingSignalsDashboard = ({ stocks }) => {
                     </div>
                 </div>
             </motion.div>
-        </div>
+
+            <SignalListModal
+                isOpen={modalConfig.isOpen}
+                onClose={handleCloseModal}
+                title={modalConfig.title}
+                stocks={modalConfig.data}
+                type={modalConfig.type}
+            />
+
+            <InfoModal
+                isOpen={infoModalOpen}
+                onClose={() => setInfoModalOpen(false)}
+                title="Understanding Win Rate"
+                content={winRateExplanation}
+            />
+        </div >
     );
 };
 
