@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import StockTicker from './components/StockTicker';
 import TradingSignalsDashboard from './components/TradingSignalsDashboard';
 import BiWeeklyAdvisor from './components/BiWeeklyAdvisor';
+import ValueStockList from './components/ValueStockList';
+import DeepValueList from './components/DeepValueList';
 import MarketPulse from './components/MarketPulse';
 import StockGrid from './components/StockGrid';
 import StockDetailModal from './components/StockDetailModal';
@@ -19,6 +21,8 @@ function App() {
     const [showStockModal, setShowStockModal] = useState(false);
     const [marketStatus, setMarketStatus] = useState('closed');
     const [wsConnection, setWsConnection] = useState(null);
+    const [valueStockSymbols, setValueStockSymbols] = useState([]);
+    const [deepValueStockSymbols, setDeepValueStockSymbols] = useState([]);
 
     // Check market status
     const checkMarketStatus = () => {
@@ -170,10 +174,23 @@ function App() {
                     </div>
 
                     {/* Trading Signals Dashboard */}
-                    <TradingSignalsDashboard stocks={stocks} />
+                    <TradingSignalsDashboard
+                        stocks={stocks}
+                        excludeSymbols={[...valueStockSymbols, ...deepValueStockSymbols]}
+                    />
 
                     {/* Hero Section - Bi-Weekly Advisor */}
                     <BiWeeklyAdvisor stocks={stocks} />
+
+                    {/* Value Stock Screener */}
+                    <div className="mb-8">
+                        <ValueStockList onStocksLoaded={setValueStockSymbols} />
+                    </div>
+
+                    {/* Deep Value Picks */}
+                    <div className="mb-8">
+                        <DeepValueList onStocksLoaded={setDeepValueStockSymbols} />
+                    </div>
 
                     {/* Market Pulse - Split View */}
                     <MarketPulse stocks={stocks} />

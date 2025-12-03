@@ -198,11 +198,39 @@ export class StockWebSocket {
     }
 }
 
+/**
+ * Fetch value stocks based on algorithm
+ */
+export const fetchValueStocks = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/value-stocks`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching value stocks:', error.message);
+        return [];
+    }
+};
+
+/**
+ * Fetch deep value stocks (Graham-style)
+ */
+export const fetchDeepValueStocks = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/deep-value-stocks`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching deep value stocks:', error.message);
+        return [];
+    }
+};
+
 export default {
     fetchStockQuote,
     fetchStockCandles,
     fetchCompanyProfile,
     fetchAllStocks,
+    fetchValueStocks,
+    fetchDeepValueStocks,
     StockWebSocket
 };
 

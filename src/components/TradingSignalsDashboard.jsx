@@ -5,15 +5,18 @@ import { TrendingUp, TrendingDown, Target, Shield, Award, Zap, AlertCircle, Info
 import { motion } from 'framer-motion';
 import { formatCurrency, formatPercent } from '../data/mockData';
 
-const TradingSignalsDashboard = ({ stocks }) => {
-    const strongBuyStocks = stocks.filter(s => s.signal === 'strong-buy');
-    const strongSellStocks = stocks.filter(s => s.signal === 'strong-sell');
-    const buyStocks = stocks.filter(s => s.signal === 'buy');
-    const sellStocks = stocks.filter(s => s.signal === 'sell');
+const TradingSignalsDashboard = ({ stocks, excludeSymbols = [] }) => {
+    // Filter out stocks that are already in the value stocks section
+    const filteredStocks = stocks.filter(s => !excludeSymbols.includes(s.symbol));
 
-    const avgWinRate = stocks.length > 0 ? stocks.reduce((sum, s) => sum + s.winRate, 0) / stocks.length : 0;
-    const topPerformer = stocks.length > 0 ? [...stocks].sort((a, b) => b.changePercent - a.changePercent)[0] : null;
-    const worstPerformer = stocks.length > 0 ? [...stocks].sort((a, b) => a.changePercent - b.changePercent)[0] : null;
+    const strongBuyStocks = filteredStocks.filter(s => s.signal === 'strong-buy');
+    const strongSellStocks = filteredStocks.filter(s => s.signal === 'strong-sell');
+    const buyStocks = filteredStocks.filter(s => s.signal === 'buy');
+    const sellStocks = filteredStocks.filter(s => s.signal === 'sell');
+
+    const avgWinRate = filteredStocks.length > 0 ? filteredStocks.reduce((sum, s) => sum + s.winRate, 0) / filteredStocks.length : 0;
+    const topPerformer = filteredStocks.length > 0 ? [...filteredStocks].sort((a, b) => b.changePercent - a.changePercent)[0] : null;
+    const worstPerformer = filteredStocks.length > 0 ? [...filteredStocks].sort((a, b) => a.changePercent - b.changePercent)[0] : null;
 
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: null, title: '', data: [] });
 
