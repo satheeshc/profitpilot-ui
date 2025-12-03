@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { fetchDeepValueStocks } from '../services/stockService';
+import { fetchDeepValueStocks, analyzeStock } from '../services/stockService';
 import { Shield, TrendingUp, Clock, Info } from 'lucide-react';
 
-const DeepValueList = ({ onStocksLoaded }) => {
+const DeepValueList = ({ onStocksLoaded, onCardClick }) => {
     const [stocks, setStocks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showInfo, setShowInfo] = useState(false);
@@ -47,6 +47,20 @@ const DeepValueList = ({ onStocksLoaded }) => {
             </div>
         );
     }
+
+    const handleCardClick = async (stock) => {
+        if (!onCardClick) return;
+
+        try {
+            // Fetch full stock analysis for the modal
+            const fullStockData = await analyzeStock(stock.symbol);
+            if (fullStockData) {
+                onCardClick(fullStockData);
+            }
+        } catch (error) {
+            console.error('Error fetching stock details:', error);
+        }
+    };
 
     return (
         <div className="bg-gradient-to-br from-blue-900/20 to-indigo-900/20 p-6 rounded-xl border-2 border-blue-500/30 backdrop-blur-sm">
@@ -99,7 +113,11 @@ const DeepValueList = ({ onStocksLoaded }) => {
             {/* Stock Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stocks.map(stock => (
-                    <div key={stock.symbol} className="bg-gray-800/50 p-4 rounded-lg border border-blue-500/30 hover:border-blue-400/50 transition-all hover:transform hover:-translate-y-1 cursor-pointer group">
+                    <div
+                        key={stock.symbol}
+                        onClick={() => handleCardClick(stock)}
+                        className="bg-gray-800/50 p-4 rounded-lg border border-blue-500/30 hover:border-blue-400/50 transition-all hover:transform hover:-translate-y-1 cursor-pointer group"
+                    >
                         <div className="flex justify-between items-start mb-3">
                             <div>
                                 <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">{stock.symbol}</h3>

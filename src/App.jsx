@@ -184,12 +184,12 @@ function App() {
 
                     {/* Value Stock Screener */}
                     <div className="mb-8">
-                        <ValueStockList onStocksLoaded={setValueStockSymbols} />
+                        <ValueStockList onStocksLoaded={setValueStockSymbols} onCardClick={handleStockClick} />
                     </div>
 
                     {/* Deep Value Picks */}
                     <div className="mb-8">
-                        <DeepValueList onStocksLoaded={setDeepValueStockSymbols} />
+                        <DeepValueList onStocksLoaded={setDeepValueStockSymbols} onCardClick={handleStockClick} />
                     </div>
 
                     {/* Market Pulse - Split View */}
