@@ -31,7 +31,7 @@ const SignalListModal = ({ isOpen, onClose, title, stocks, type }) => {
                                 {stocks.map(stock => (
                                     <div key={stock.symbol} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
                                         <div>
-                                            <p className="font-bold text-slate-900 dark:text-white">{stock.symbol}</p>
+                                            <p className="font-bold text-slate-900 dark:text-white" title={stock.name}>{stock.symbol}</p>
                                             <p className="text-xs text-slate-500">{stock.name}</p>
                                         </div>
                                         <div className="text-right">

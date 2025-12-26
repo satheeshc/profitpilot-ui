@@ -119,7 +119,7 @@ const StockDetailModal = ({ stock, isOpen, onClose }) => {
                         <div className="mb-6 pr-12">
                             <div className="flex-1">
                                 <div className="flex items-center space-x-3 mb-2">
-                                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+                                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white" title={stock.name}>
                                         {stock.symbol}
                                     </h2>
                                     <span className={`px-3 py-1 rounded-full text-xs font-bold border ${stock.signal === 'strong-buy' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' :

@@ -93,7 +93,7 @@ const TradingSignalsDashboard = ({ stocks, excludeSymbols = [] }) => {
                     >
                         <div className="flex items-center justify-between mb-2">
                             <div>
-                                <h4 className="text-lg font-black text-slate-900 dark:text-white">{stock.symbol}</h4>
+                                <h4 className="text-lg font-black text-slate-900 dark:text-white" title={stock.name}>{stock.symbol}</h4>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">{stock.name}</p>
                             </div>
                             <div className="text-right">
@@ -213,7 +213,7 @@ const TradingSignalsDashboard = ({ stocks, excludeSymbols = [] }) => {
                         <AlertCircle className="w-5 h-5 text-blue-500" />
                         <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Top Mover</p>
                     </div>
-                    <p className="text-xl font-black text-blue-600 dark:text-blue-400">
+                    <p className="text-xl font-black text-blue-600 dark:text-blue-400" title={topPerformer ? topPerformer.name : ''}>
                         {topPerformer ? topPerformer.symbol : '-'}
                     </p>
                     <p className="text-sm font-bold text-emerald-500">

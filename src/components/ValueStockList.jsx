@@ -54,7 +54,8 @@ const ValueStockList = ({ onStocksLoaded, onCardClick }) => {
             // Fetch full stock analysis for the modal
             const fullStockData = await analyzeStock(stock.symbol);
             if (fullStockData) {
-                onCardClick(fullStockData);
+                // Ensure name is preserved for the modal tooltip
+                onCardClick({ ...fullStockData, name: stock.name || fullStockData.name });
             }
         } catch (error) {
             console.error('Error fetching stock details:', error);
@@ -79,7 +80,7 @@ const ValueStockList = ({ onStocksLoaded, onCardClick }) => {
                     >
                         <div className="flex justify-between items-start mb-3">
                             <div>
-                                <h3 className="text-xl font-bold text-white group-hover:text-green-400 transition-colors">{stock.symbol}</h3>
+                                <h3 className="text-xl font-bold text-white group-hover:text-green-400 transition-colors" title={stock.name}>{stock.symbol}</h3>
                                 <p className="text-xs text-gray-400">Quality Score: Excellent</p>
                             </div>
                             <div className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-medium border border-green-500/30">

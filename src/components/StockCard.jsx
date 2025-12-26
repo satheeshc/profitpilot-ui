@@ -74,7 +74,7 @@ const StockCard = ({ stock, index, onCardClick }) => {
 
             {/* Header */}
             <div className="mb-4 pr-24">
-                <h3 className="text-2xl font-black mb-1 text-slate-900 dark:text-white tracking-tight">{stock.symbol}</h3>
+                <h3 className="text-2xl font-black mb-1 text-slate-900 dark:text-white tracking-tight" title={stock.name}>{stock.symbol}</h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 font-medium">{stock.name}</p>
             </div>
 

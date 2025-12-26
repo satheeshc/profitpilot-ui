@@ -183,7 +183,7 @@ const Navbar = ({ stocks = [], onStockClick, marketStatus = 'closed' }) => {
                                                     {result.symbol[0]}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-900 dark:text-white">{result.symbol}</p>
+                                                    <p className="font-bold text-slate-900 dark:text-white" title={result.description || result.name}>{result.symbol}</p>
                                                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[200px]">
                                                         {result.description || result.name}
                                                     </p>

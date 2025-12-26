@@ -115,7 +115,7 @@ const BiWeeklyAdvisor = ({ stocks }) => {
                                         >
                                             <td className="py-4 px-4">
                                                 <div>
-                                                    <p className="font-bold text-slate-900 dark:text-white">{item.symbol}</p>
+                                                    <p className="font-bold text-slate-900 dark:text-white" title={item.name}>{item.symbol}</p>
                                                     <p className="text-xs text-slate-500 dark:text-slate-400">{item.name}</p>
                                                 </div>
                                             </td>

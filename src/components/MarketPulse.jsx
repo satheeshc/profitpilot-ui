@@ -14,14 +14,14 @@ const MarketPulse = ({ stocks }) => {
             <motion.div
                 whileHover={{ scale: 1.02, x: 5 }}
                 className={`p-4 rounded-xl border transition-all ${isGreen
-                        ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50'
-                        : 'bg-gradient-to-r from-red-500/10 to-red-500/5 border-red-500/30 hover:border-red-500/50'
+                    ? 'bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/50'
+                    : 'bg-gradient-to-r from-red-500/10 to-red-500/5 border-red-500/30 hover:border-red-500/50'
                     }`}
             >
                 <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
-                            <h4 className="font-bold text-lg text-slate-900 dark:text-white">{stock.symbol}</h4>
+                            <h4 className="font-bold text-lg text-slate-900 dark:text-white" title={stock.name}>{stock.symbol}</h4>
                             {isGreen && (
                                 <Award className="w-4 h-4 text-emerald-500" />
                             )}
